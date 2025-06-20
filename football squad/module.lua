@@ -10,7 +10,7 @@ function p.kadro(frame)
     local unknown_players = {}
     -- Read team details
     local team_name = Args['team_name'] or Args['takım_adı']
-    local title = Args['title'] or Args['başlık']
+    local title = Args['title'] or Args['başlık'] or team_name or ''
     local back_color = Args['back_color'] or Args['zeminrengi']
     local text_color = Args['text_color'] or Args['metinrengi']
     local side_color = Args['side_color'] or Args['kenarrengi']
@@ -19,6 +19,9 @@ function p.kadro(frame)
     local update = Args['update'] or Args['güncelleme']
     local typetemp = tonumber(Args['type']) or tonumber(Args['tip']) or 0
 
+    if title ~= '' then
+        title = mw.ustring.match(title, "^([^%(]*)")
+    end
     local function new_playerFormatParse(param_value, number)
         -- Check if it's in the new format by looking for patterns like name=
         if type(param_value) == "string" and (param_value:find("name=") or param_value:find("ad=")) then
