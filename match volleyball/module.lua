@@ -93,7 +93,7 @@ function p.standings(frame)
 
                 -- Set skorlarını hesapla
                 for _, set in ipairs(sets) do
-                    if set and set ~= "" then
+                    if set and set ~= "" and mw.ustring.sub(set, 1, 1) ~= "|" then
                         local t1Score, t2Score = set:match("(%d+)-(%d+)")
                         if t1Score and t2Score then
                             t1Score = tonumber(t1Score)
@@ -304,7 +304,21 @@ function p.matches(frame)
 
     for round, team1, team2, t1, t2, date, time, result, s1, s2, s3, s4, s5 in mw.ustring.gmatch(content, pattern) do
         if (filterRound == '' or round == filterRound) and (team == '' or team1 == team or team2 == team) then
-            table.insert(results, "{{" .. league .. " maçları|" .. round .. '-' .. team1 .. "-" .. team2 .. "}}")
+            local pattern2 = "(%d+)%s*-%s*(%d+)"
+            local matchResult = ''
+            for num1, num2 in mw.ustring.gmatch(result, pattern2) do
+                if result == '-' then
+                    matchResult = " "
+                end
+                if team == team1 then
+                    matchResult = (num1 > num2 and "G") or (num1 < num2 and "M") or "B"
+                elseif team == team2 then
+                    matchResult = (num1 > num2 and "M") or (num1 < num2 and "G") or "B"
+                end
+
+            end
+            table.insert(results, "{{" .. league .. " maçları|" .. round .. '-' .. team1 .. "-" .. team2 .. "|" ..
+                matchResult .. "}}")
 
         end
     end
