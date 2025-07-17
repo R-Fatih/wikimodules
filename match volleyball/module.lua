@@ -290,5 +290,27 @@ function p.standings(frame)
     table.insert(output, '}}')
     return mw.text.trim(frame:preprocess(table.concat(output, "\n")))
 end
+function p.matches(frame)
+    local league = frame.args[1]
+    local team = frame.args[2] or ''
+    local filterRound = frame.args['Round'] or ''
+    local pattern =
+        "|(..)-(...)-(...)%s*=%s*\n{{vb res %d+\n|%s*takım1%s*=%s*{{(vb[^}]*)}}%s*\n|%s*takım2%s*=%s*{{(vb[^}]*)}}%s*\n|%s*tarih%s*=%s*([^\n]*)\n|%s*zaman%s*=%s*([^\n]*)\n|%s*sonuç%s*=%s*([^\n]*)\n|%s*set1%s*=%s*([^\n]*)\n|%s*set2%s*=%s*([^\n]*)\n|%s*set3%s*=%s*([^\n]*)\n|%s*set4%s*=%s*([^\n]*)\n|%s*set5%s*=%s*([^\n]*)"
+    local templateName = "Şablon:" .. league .. " maçları/maçlar"
+    local templatePage = mw.title.new(templateName)
+    local content = templatePage:getContent()
+    local results = {}
+    table.insert(results, "<div style='overflow-x: auto; white-space: nowrap;'>\n{{Vb res start 5}}")
 
+    for round, team1, team2, t1, t2, date, time, result, s1, s2, s3, s4, s5 in mw.ustring.gmatch(content, pattern) do
+        if (filterRound == '' or round == filterRound) and (team == '' or team1 == team or team2 == team) then
+            table.insert(results, "{{" .. league .. " maçları|" .. round .. '-' .. team1 .. "-" .. team2 .. "}}")
+
+        end
+    end
+    table.insert(results, "{{end}}")
+
+    return mw.text.trim(frame:preprocess(table.concat(results, "\n")))
+
+end
 return p
