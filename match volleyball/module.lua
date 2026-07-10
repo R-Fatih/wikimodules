@@ -262,7 +262,7 @@ function p.standings(frame)
 
     for _, rule in ipairs(qualificationRules) do
         table.insert(output, '|col_' .. rule.name .. '=' .. rule.color .. '|text_' .. rule.name .. '=' .. rule.text)
-        if positionFinalist > rule.finish then
+        if positionFinalist >= rule.finish then
             -- eğer finalist takım zaten kontenjan alamadıysa bir kontenjan azalt
             rule.finish = rule.finish - 1
         end
